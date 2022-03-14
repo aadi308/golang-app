@@ -1,0 +1,17 @@
+FROM golang:1.11.0 AS builder
+RUN mkdir /app
+ADD . /app
+WORKDIR /app
+COPY go.mod ./
+COPY go.sum ./
+
+RUN go mod download 
+COPY *.go ./
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app ./
+CMD ["sudo /app/main.go"]
+
